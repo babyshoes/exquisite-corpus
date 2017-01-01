@@ -1,9 +1,12 @@
+<!-- Poem edit component for incomplete poems -->
 <form *ngIf="!poem || !poem.isComplete" [formGroup]="poemForm" (ngSubmit)="savePoem()">
+    <!-- Show the last written line of the poem if available -->
     <div *ngIf="poem">{{poem.title()}}</div>
 
     <input type="text" formControlName="line1">
     <input type="text" formControlName="line2">
 
+    <!-- If the poem is being edited, add the option to complete it -->
     <div *ngIf="poem">
         <input type="checkbox" *ngIf="poem" formControlName="isComplete">
         <label>These lines complete the poem</label>
@@ -12,6 +15,7 @@
     <button type="submit">Save</button>
 </form>
 
+<!-- Readonly component for completed poems -->
 <div *ngIf="poem && poem.isComplete">
     <ol>
         <li *ngFor="let line of poem.lines">{{line.text}}</li>
