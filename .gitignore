@@ -5,3 +5,5 @@ typings
 .idea
 build
 dist
+exquisite-corpus.sublime-project
+exquisite-corpus.sublime-workspace
