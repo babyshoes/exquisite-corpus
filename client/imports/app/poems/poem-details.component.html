@@ -1,0 +1,21 @@
+<form *ngIf="!poem || !poem.isComplete" [formGroup]="poemForm" (ngSubmit)="savePoem()">
+    <div *ngIf="poem">{{poem.title()}}</div>
+
+    <input type="text" formControlName="line1">
+    <input type="text" formControlName="line2">
+
+    <div *ngIf="poem">
+        <input type="checkbox" *ngIf="poem" formControlName="isComplete">
+        <label>These lines complete the poem</label>
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+<div *ngIf="poem && poem.isComplete">
+    <ol>
+        <li *ngFor="let line of poem.lines">{{line.text}}</li>
+    </ol>
+</div>
+
+<a [routerLink]="['']">Back</a>

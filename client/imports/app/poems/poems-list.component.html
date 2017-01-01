@@ -1,0 +1,9 @@
+<div>
+    <ul>
+        <li *ngFor="let poem of poems | async">
+            <a [routerLink]="['/poem', poem._id]">{{poem.title()}}</a>
+            <button (click)="removePoem(poem)">X</button>
+        </li>
+    </ul>
+    <a [routerLink]="['/poem']">New</a>
+</div>
