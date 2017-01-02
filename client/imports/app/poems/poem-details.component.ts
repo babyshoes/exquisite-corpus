@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { Meteor } from 'meteor/meteor';
+import { MeteorObservable } from 'meteor-rxjs';
 
 import 'rxjs/add/operator/map';
 
@@ -19,6 +21,7 @@ import template from './poem-details.component.html';
 export class PoemDetailsComponent implements OnInit, OnDestroy {
     poemId: string;
     poem: Poem;
+    poemSub: Subscription;
     paramsSub: Subscription;
     poemForm: FormGroup;
 
@@ -34,7 +37,14 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
             .map(params => params['poemId'])
             .subscribe(poemId => {
                 this.poemId = poemId;
-                this.poem = Poems.findOne(this.poemId);
+
+                if (this.poemSub) {
+                    this.poemSub.unsubscribe();
+                }
+
+                this.poemSub = MeteorObservable.subscribe('poem', this.poemId).subscribe(() => {
+                    this.poem = Poems.findOne(this.poemId);
+                });
             });
 
         // Create the form
@@ -46,20 +56,23 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        // Clean up the subscription when the component is destroyed
+        // Clean up the subscriptions when the component is destroyed
         this.paramsSub.unsubscribe();
+        this.poemSub.unsubscribe();
     }
 
     savePoem() {
-        // Only save if the form is valid
-        if (this.poemForm.valid) {
+        // Only save if the form is valid and the user is logged in
+        if (this.poemForm.valid && Meteor.userId()) {
             // Get the new lines from the form builder
             let newLines: PoemLine[] = [
                 {
-                    text: this.poemForm.value.line1
+                    text: this.poemForm.value.line1,
+                    contributorId: Meteor.userId()
                 }, 
                 {
-                    text: this.poemForm.value.line2
+                    text: this.poemForm.value.line2,
+                    contributorId: Meteor.userId()
                 }
             ];
 
@@ -67,14 +80,17 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
                 // If this is a new poem, insert it
                 Poems.insert({
                     lines: newLines,
-                    isComplete: false
+                    isComplete: false,
+                    creatorId: Meteor.userId(),
+                    lastContributorId: Meteor.userId()
                 });
             } else {
                 // If this is an existing poem, append the lines
                 Poems.update(this.poem._id, {
                     $set: {
                         lines: this.poem.lines.concat(newLines),
-                        isComplete: this.poemForm.value.isComplete
+                        isComplete: this.poemForm.value.isComplete,
+                        lastContributorId: Meteor.userId()
                     }
                 });
             }

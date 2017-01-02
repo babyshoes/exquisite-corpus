@@ -1,9 +1,13 @@
 <div>
+    <login-buttons></login-buttons>
     <ul>
         <li *ngFor="let poem of poems | async">
             <a [routerLink]="['/poem', poem._id]">{{poem.title()}}</a>
-            <button (click)="removePoem(poem)">X</button>
+            <button
+                *ngIf="currentUserCanRemovePoem(poem)"
+                (click)="removePoem(poem)">X</button>
+            <span *ngIf="poem.isComplete">Complete</span>
         </li>
     </ul>
-    <a [routerLink]="['/poem']">New</a>
+    <a *ngIf="user" [routerLink]="['/poem']">New</a>
 </div>
