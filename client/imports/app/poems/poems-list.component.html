@@ -9,5 +9,6 @@
             <span *ngIf="poem.isComplete">Complete</span>
         </li>
     </ul>
+    <pagination-controls (pageChange)="onPageChanged($event)"></pagination-controls>
     <a *ngIf="user" [routerLink]="['/poem']">New</a>
 </div>

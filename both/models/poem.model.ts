@@ -7,7 +7,9 @@ export interface Poem extends CollectionObject {
     lines: PoemLine[];
     isComplete: boolean;
     creatorId: string;
+    creationDate: Date;
     lastContributorId: string;
+    lastModifiedDate: Date;
     title?(): string;
 }
 

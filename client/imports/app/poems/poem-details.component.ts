@@ -76,13 +76,17 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
                 }
             ];
 
+            let date: Date = new Date();
+
             if (!this.poem) {
                 // If this is a new poem, insert it
                 Poems.insert({
                     lines: newLines,
                     isComplete: false,
                     creatorId: Meteor.userId(),
-                    lastContributorId: Meteor.userId()
+                    creationDate: date,
+                    lastContributorId: Meteor.userId(),
+                    lastModifiedDate: date
                 });
             } else {
                 // If this is an existing poem, append the lines
@@ -90,7 +94,8 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
                     $set: {
                         lines: this.poem.lines.concat(newLines),
                         isComplete: this.poemForm.value.isComplete,
-                        lastContributorId: Meteor.userId()
+                        lastContributorId: Meteor.userId(),
+                        lastModifiedDate: date
                     }
                 });
             }

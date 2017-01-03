@@ -1,9 +1,19 @@
 import { Meteor } from 'meteor/meteor';
+import { Counts } from 'meteor/tmeasday:publish-counts';
 
 import { Poems } from '../../../both/collections/poems.collection';
+import { Options } from '../../../both/filters/pagination';
 
-Meteor.publish('poems', function() {
-    return Poems.find(buildQuery.call(this));
+Meteor.publish('poems', function(options: Options) {
+    // Publish total count
+    Counts.publish(
+        this,
+        'numberOfPoems',
+        Poems.collection.find(buildQuery.call(this)),
+        { noReady: true });
+
+    // Return filtered poems
+    return Poems.find(buildQuery.call(this), options);
 });
 
 Meteor.publish('poem', function(poemId: string) {
@@ -11,18 +21,24 @@ Meteor.publish('poem', function(poemId: string) {
 });
 
 function buildQuery(poemId?: string): Object {
+    const completeQuery = {
+        // All users (even anonymous) can see completed poems
+        isComplete: true
+    };
+
     // Base query for poem permissions
-    const baseQuery = {
-        $or: [{
-            // Poem is complete
-            isComplete: true
-        }, {
-            lastContributorId: {
-                // Current user is not the last contributor
-                $ne: this.userId
-            }
-        }]
-    }
+    const baseQuery = this.userId
+        ? { 
+            $or: [completeQuery, {
+                lastContributorId: {
+                    // Logged in users can edit poems for which they're
+                    // not the last contributor
+                    $ne: this.userId
+                }
+            }]
+        }
+        // Anonymous users can only view complete poems
+        : completeQuery;
 
     return poemId
         // Look for a single poem
