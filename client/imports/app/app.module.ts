@@ -8,6 +8,7 @@ import { Ng2PaginationModule } from 'ng2-pagination';
 import { AppComponent } from './app.component';
 import { routes, ROUTES_PROVIDERS } from './app.routes';
 import { POEMS_DECLARATIONS } from './poems';
+import { PIPES_DECLARATIONS } from './pipes';
  
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import { POEMS_DECLARATIONS } from './poems';
     ],
     declarations: [
         AppComponent,
-        ...POEMS_DECLARATIONS
+        ...POEMS_DECLARATIONS,
+        ...PIPES_DECLARATIONS
     ],
     providers: [
         ...ROUTES_PROVIDERS

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Meteor } from 'meteor/meteor';
 import { MeteorObservable } from 'meteor-rxjs';
@@ -10,6 +11,8 @@ import 'rxjs/add/operator/map';
 import { Poems } from '../../../../both/collections/poems.collection';
 import { Poem } from '../../../../both/models/poem.model';
 import { PoemLine } from '../../../../both/models/poem-line.model';
+import { Users } from '../../../../both/collections/users.collection';
+import { User } from '../../../../both/models/user.model';
 
 import template from './poem-details.component.html';
 
@@ -24,6 +27,8 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
     poemSub: Subscription;
     paramsSub: Subscription;
     poemForm: FormGroup;
+    contributors: Observable<User>;
+    contributorSub: Subscription;
 
     constructor(
         private route: ActivatedRoute,
@@ -38,6 +43,7 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
             .subscribe(poemId => {
                 this.poemId = poemId;
 
+                // Subscribe to this poem
                 if (this.poemSub) {
                     this.poemSub.unsubscribe();
                 }
@@ -45,6 +51,16 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
                 this.poemSub = MeteorObservable.subscribe('poem', this.poemId).subscribe(() => {
                     this.poem = Poems.findOne(this.poemId);
                 });
+
+                // Subscribe to the list of contributors for this poem
+                if (this.contributorSub) {
+                    this.contributorSub.unsubscribe();
+                }
+
+                this.contributorSub = MeteorObservable.subscribe('contributors', this.poemId)
+                    .subscribe(() => {
+                        this.contributors = Users.find({}).zone();
+                    });
             });
 
         // Create the form
@@ -59,6 +75,7 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
         // Clean up the subscriptions when the component is destroyed
         this.paramsSub.unsubscribe();
         this.poemSub.unsubscribe();
+        this.contributorSub.unsubscribe();
     }
 
     savePoem() {

@@ -1,7 +1,7 @@
 <!-- Poem edit component for incomplete poems -->
 <form *ngIf="!poem || !poem.isComplete" [formGroup]="poemForm" (ngSubmit)="savePoem()">
     <!-- Show the last written line of the poem if available -->
-    <div *ngIf="poem">{{poem.title()}}</div>
+    <div *ngIf="poem">{{poem | poemTitle}}</div>
 
     <input type="text" formControlName="line1">
     <input type="text" formControlName="line2">
@@ -20,6 +20,12 @@
     <ol>
         <li *ngFor="let line of poem.lines">{{line.text}}</li>
     </ol>
+    <div>
+        <h1>Contributors</h1>
+        <ul>
+            <li *ngFor="let user of contributors | async">{{user | displayName}}</li>
+        </ul>
+    </div>
 </div>
 
 <a [routerLink]="['']">Back</a>
