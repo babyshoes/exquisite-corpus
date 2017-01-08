@@ -1,5 +1,4 @@
 <div>
-    <login-buttons></login-buttons>
     <ul>
         <li *ngFor="let poem of poems | async">
             <a [routerLink]="['/poem', poem._id]">{{poem | poemTitle}}</a>
@@ -10,5 +9,4 @@
         </li>
     </ul>
     <pagination-controls (pageChange)="onPageChanged($event)"></pagination-controls>
-    <a *ngIf="user" [routerLink]="['/poem']">New</a>
 </div>

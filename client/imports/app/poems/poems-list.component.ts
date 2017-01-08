@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { InjectUser } from 'angular2-meteor-accounts-ui';
 import { Meteor } from 'meteor/meteor';
 import { MeteorObservable } from 'meteor-rxjs';
 import { PaginationService } from 'ng2-pagination';
@@ -20,10 +19,8 @@ import template from './poems-list.component.html';
     selector: 'poems-list',
     template
 })
-@InjectUser('user')
 export class PoemsListComponent implements OnInit, OnDestroy {
     poems: Observable<Poem[]>;
-    user: Meteor.User;
     poemsSub: Subscription;
     pageSize: Subject<number> = new Subject<number>();
     currentPage: Subject<number> = new Subject<number>();
@@ -36,7 +33,7 @@ export class PoemsListComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        const defaultPageSize: number = 1;
+        const defaultPageSize: number = 10;
 
         // Combine page size and current page into an observable and subscribe
         this.optionsSub = Observable.combineLatest(

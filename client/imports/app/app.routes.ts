@@ -1,14 +1,14 @@
 import { Route } from '@angular/router';
 import { Meteor } from 'meteor/meteor';
 
-import { PoemsListComponent } from './poems/poems-list.component';
+import { HomeComponent } from './views/home.component';
 import { PoemDetailsComponent } from './poems/poem-details.component';
 
 export const routes: Route[] = [
-    // List of all poems
+    // Home page with a list of all poems
     {
         path: '',
-        component: PoemsListComponent
+        component: HomeComponent
     },
     // Details component for editing or viewing an existing poem
     { 
