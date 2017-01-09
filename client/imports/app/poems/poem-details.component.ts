@@ -20,7 +20,6 @@ import template from './poem-details.component.html';
     selector: 'poem-details',
     template
 })
-
 export class PoemDetailsComponent implements OnInit, OnDestroy {
     poemId: string;
     poem: Poem;
@@ -48,7 +47,10 @@ export class PoemDetailsComponent implements OnInit, OnDestroy {
                     this.poemSub.unsubscribe();
                 }
 
-                this.poemSub = MeteorObservable.subscribe('poem', this.poemId).subscribe(() => {
+                this.poemSub = MeteorObservable.subscribe('poems', {}, {
+                        poemId: this.poemId
+                    })
+                .subscribe(() => {
                     this.poem = Poems.findOne(this.poemId);
                 });
 

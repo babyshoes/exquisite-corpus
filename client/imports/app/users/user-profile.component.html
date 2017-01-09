@@ -1,0 +1,16 @@
+<div *ngIf="user">
+    <h1>{{ user | displayName }}</h1>
+
+    <!-- Editable details for current user -->
+    <form *ngIf="canUpdate()" (submit)="saveUser()">
+        <label>Name</label>
+        <input type="text" [(ngModel)]="user.username" name="username">
+        <button type="submit">Save</button>
+    </form>
+
+    <!-- List of poems this user has contributed to -->
+    <h1>Poems</h1>
+    <poems-list [userId]="user._id"></poems-list>
+</div>
+
+<a [routerLink]="['']">Home</a>

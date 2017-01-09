@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
@@ -27,6 +27,9 @@ export class PoemsListComponent implements OnInit, OnDestroy {
     optionsSub: Subscription;
     poemsSize: number = 0;
     autorunSub: Subscription;
+
+    // Optional poem list filters
+    @Input() userId?: string;
 
     constructor(
         private paginationService: PaginationService
@@ -57,7 +60,10 @@ export class PoemsListComponent implements OnInit, OnDestroy {
             }
 
             // Subscribe to the current page of poems
-            this.poemsSub = MeteorObservable.subscribe('poems', options).subscribe(() => {
+            this.poemsSub = MeteorObservable.subscribe('poems', options, {
+                    userId: this.userId
+                })
+            .subscribe(() => {
                 this.poems = Poems.find({}, {
                     sort: sort
                 }).zone();

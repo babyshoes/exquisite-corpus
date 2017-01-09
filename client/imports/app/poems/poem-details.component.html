@@ -23,9 +23,11 @@
     <div>
         <h1>Contributors</h1>
         <ul>
-            <li *ngFor="let user of contributors | async">{{user | displayName}}</li>
+            <li *ngFor="let user of contributors | async">
+                <a [routerLink]="['/user', user._id]">{{user | displayName}}</a>
+            </li>
         </ul>
     </div>
 </div>
 
-<a [routerLink]="['']">Back</a>
+<a [routerLink]="['']">Home</a>

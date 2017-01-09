@@ -19,3 +19,9 @@ Meteor.publish('contributors', function (poemId: string) {
         }
     });
 });
+
+Meteor.publish('user', function (userId: string) {
+    return Meteor.users.find({
+        _id: userId
+    });
+});

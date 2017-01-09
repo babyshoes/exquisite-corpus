@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 
 import { HomeComponent } from './views/home.component';
 import { PoemDetailsComponent } from './poems/poem-details.component';
+import { UserProfileComponent } from './users/user-profile.component';
 
 export const routes: Route[] = [
     // Home page with a list of all poems
@@ -20,6 +21,11 @@ export const routes: Route[] = [
         path: 'poem',
         component: PoemDetailsComponent,
         canActivate: ['canActivateForLoggedIn']
+    },
+    // User profile component
+    {
+        path: 'user/:userId',
+        component: UserProfileComponent
     }
 ];
 

@@ -4,7 +4,8 @@ import { Meteor } from 'meteor/meteor';
 import { User } from '../../../../both/models/user.model';
 
 @Pipe({
-    name: 'displayName'
+    name: 'displayName',
+    pure: false
 })
 export class DisplayNamePipe implements PipeTransform {
     // Transforms a user model into a friendly name
